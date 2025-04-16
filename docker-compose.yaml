@@ -1,0 +1,29 @@
+
+services:
+  pgdb:
+    image: "postgres:13.2"
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD-postgres}
+      POSTGRES_DB: ${DATABASE_NAME-postgres}
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nominal_api
+    volumes:
+      - ./app:/opt/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - pgdb
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_db:
