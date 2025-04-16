@@ -4,9 +4,9 @@ import requests
 
 from intuitlib.client import AuthClient
 
-from app.models.auth import Token
-from app.config.settings import settings
-from app.schemas.auth import TokenCreate
+from models.auth import Token
+from config.settings import settings
+from schemas.auth import TokenCreate
 
 
 class AuthService:
@@ -14,6 +14,7 @@ class AuthService:
         self.db = db
         self._auth_client = None
 
+    @property
     def auth_client(self) -> AuthClient:
         """Create and return an AuthClient instance"""
         if self._auth_client:
@@ -27,10 +28,10 @@ class AuthService:
             settings.STATE,
         )
         return client
-    
+
     def save_token(self, access_token: str, refresh_token: str, realm_id: str, expires_in: int) -> Token:
         """Save or update token in the database"""
-        expires_at = datetime.utcnow() + timedelta(seconds=expires_in)
+        expires_at = datetime.now() + timedelta(seconds=expires_in)
         
         token_data = TokenCreate(
             access_token=access_token,

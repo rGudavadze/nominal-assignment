@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 import requests
 from typing import List, Optional
 
-from app.models.account import Account
-from app.config.settings import settings
-from app.services.auth import AuthService
-from app.schemas.account import AccountCreate
+from models.account import Account
+from config.settings import settings
+from services.auth import AuthService
+from schemas.account import AccountCreate
 
 
 class AccountService:
@@ -16,7 +16,7 @@ class AccountService:
     
     def sync_accounts(self):
         """Sync accounts from QuickBooks to local database"""
-        token = self.token_service.get_valid_token()
+        token = self.auth_service.get_valid_token()
         
         url = f"{settings.API_BASE}/company/{token.realm_id}/query"
         headers = {
@@ -76,6 +76,7 @@ class AccountService:
     
     def should_sync(self) -> bool:
         """Check if accounts need to be synced (older than 1 hour)"""
+        print("Checking if accounts need to be synced...")
         last_sync = self.db.query(Account.last_synced_at).order_by(Account.last_synced_at.desc()).first()
         if not last_sync:
             return True
@@ -87,4 +88,4 @@ class AccountService:
         if self.should_sync():
             self.sync_accounts()
         
-        return self.get_accounts(name_prefix) 
+        return self.get_accounts(name_prefix)

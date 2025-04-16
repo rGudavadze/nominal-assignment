@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     CLIENT_ID: str = "ABBUzqL6ULdbIHJXKENYjDHXXjizvSRmwxFr0eeFqMcHLmYxt1"
     CLIENT_SECRET: str = "YgzBiE9Ije7yBq7L2b9v08zBDkQxRlBVaKSPZiTl"
@@ -15,11 +16,11 @@ class Settings(BaseSettings):
     # Database settings
     DB_USER: str = "postgres"
     DB_PASSWORD: str = "postgres"
-    DB_HOST: str = "localhost"
-    DB_PORT: str = "5432"
-    DB_NAME: str = "quickbooks"
+    DB_HOST: str = "pgdb"
+    DB_PORT: int = 5432
+    DB_NAME: str = "postgres"
     
     class Config:
         env_file = ".env"
 
-settings = Settings() 
+settings = Settings()
