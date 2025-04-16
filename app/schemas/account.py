@@ -21,7 +21,7 @@ class Account(AccountBase):
     id: int
     qbo_id: str
     last_synced_at: datetime
-    children: List['Account'] = []
+    parent_id: Optional[int] = None
 
     class Config:
         from_attributes = True
