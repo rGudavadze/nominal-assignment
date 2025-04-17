@@ -8,7 +8,7 @@ from intuitlib.client import AuthClient
 
 from models.auth import Token
 from config.settings import settings
-from schemas.auth import TokenCreate
+from schemas.auth import TokenCreateSchema
 
 
 class AuthService:
@@ -35,7 +35,7 @@ class AuthService:
         """Save or update token in the database"""
         expires_at = datetime.now() + timedelta(seconds=expires_in)
         
-        token_data = TokenCreate(
+        token_data = TokenCreateSchema(
             access_token=access_token,
             refresh_token=refresh_token,
             realm_id=realm_id,
