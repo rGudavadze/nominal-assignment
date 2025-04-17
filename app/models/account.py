@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from datetime import datetime
 
 from database import Base
 
@@ -17,6 +16,5 @@ class Account(Base):
     active = Column(Boolean, default=True)
     current_balance = Column(Float)
     parent_id = Column(String, ForeignKey('accounts.qbo_id'), nullable=True)
-    last_synced_at = Column(DateTime, default=datetime.utcnow)
-    
+
     children = relationship("Account", backref="parent", remote_side=[qbo_id])
