@@ -1,9 +1,9 @@
 from pydantic import BaseModel
-from typing import Optional, List
-from datetime import datetime
+from typing import Optional
 
 
-class AccountBase(BaseModel):
+class AccountBaseSchema(BaseModel):
+    qbo_id: str
     name: str
     classification: Optional[str] = None
     currency_ref: Optional[str] = None
@@ -13,18 +13,15 @@ class AccountBase(BaseModel):
     parent_id: Optional[str] = None
 
 
-class AccountCreate(AccountBase):
-    qbo_id: str
+class AccountCreateSchema(AccountBaseSchema):
+    pass
 
 
-class Account(AccountBase):
+class AccountSchema(AccountBaseSchema):
     id: int
-    qbo_id: str
-    last_synced_at: datetime
-    parent_id: Optional[int] = None
 
     class Config:
         from_attributes = True
 
 # This is needed for the self-referential relationship in Account
-Account.model_rebuild()
+AccountSchema.model_rebuild()

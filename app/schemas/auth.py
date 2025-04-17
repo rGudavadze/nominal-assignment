@@ -2,16 +2,16 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class TokenBase(BaseModel):
+class TokenBaseSchema(BaseModel):
     access_token: str
     refresh_token: str
     realm_id: str
     expires_at: datetime
 
-class TokenCreate(TokenBase):
+class TokenCreateSchema(TokenBaseSchema):
     expires_in: int
 
-class Token(TokenBase):
+class TokenSchema(TokenBaseSchema):
     id: int
     created_at: datetime
     updated_at: datetime
