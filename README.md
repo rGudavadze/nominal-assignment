@@ -34,15 +34,15 @@ REDIRECT_URI=http://localhost:8000/callback
 # Database settings
 DB_USER=postgres
 DB_PASSWORD=postgres
-DB_HOST=localhost
+DB_HOST=pgdb
 DB_PORT=5432
-DB_NAME=quickbooks
+DB_NAME=postgres
 ```
 
 4. Set up the PostgreSQL database:
 ```bash
 # Create the database
-createdb quickbooks
+createdb postgres
 
 # Initialize the database tables
 python -m app.init_db
@@ -94,4 +94,5 @@ The API includes comprehensive error handling for:
 Account data is cached in the PostgreSQL database and automatically synchronized:
 - Initial sync on first request
 - Subsequent syncs after 1 hour
+- Only accounts updated since the last sync are retrieved
 - Manual sync available through the API 

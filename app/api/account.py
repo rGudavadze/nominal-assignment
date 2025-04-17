@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import HTTPException, Depends, APIRouter
+from fastapi import Depends, APIRouter
 
 from schemas.account import Account
 from services.account import AccountService

@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 import requests
 
@@ -69,7 +71,7 @@ class AuthService:
             return self.refresh_token(token)
         
         return token
-    
+
     def refresh_token(self, token: Token) -> Token:
         """Refresh the access token using the refresh token"""
         response = requests.post(
@@ -81,10 +83,10 @@ class AuthService:
                 'client_secret': settings.CLIENT_SECRET
             }
         )
-        
+
         if response.status_code != 200:
-            raise ValueError(f"Failed to refresh token: {response.text}")
-        
+            raise HTTPException(400, f"Failed to refresh token: {response.text}")
+
         data = response.json()
         return self.save_token(
             access_token=data['access_token'],
