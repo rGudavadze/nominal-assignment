@@ -1,98 +1,95 @@
-# QuickBooks Integration API
+# Nominal - QuickBooks Integration Service
 
-This application provides a REST API for integrating with QuickBooks Online using OAuth 2.0 authentication. It includes features for account management, token handling, and data caching.
+A FastAPI-based service that integrates with QuickBooks API to manage accounts and sync data.
 
 ## Features
 
-- OAuth 2.0 authentication with QuickBooks Online
-- Token management with automatic refresh
-- Account data caching and synchronization
-- Account filtering by name prefix
-- Hierarchical account structure support
-- Error handling and rate limiting
-- PostgreSQL database for data persistence
+- OAuth2 authentication with QuickBooks
+- Account synchronization with QuickBooks
+- RESTful API endpoints
+- PostgreSQL database integration
+- Comprehensive test suite
+- Docker support for easy deployment
 
-## Setup
+## Prerequisites
 
-1. Create a virtual environment:
+- Python 3.12+
+- PostgreSQL
+- Docker and Docker Compose (for containerized deployment)
+- QuickBooks Developer Account
+
+## Local Development Setup
+
+1. Clone the repository:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+git clone <repository-url>
+cd nominal
 ```
 
-2. Install dependencies:
+2. Build the Docker image:
 ```bash
-pip install -r requirements.txt
+docker build -t nominal .
 ```
 
-3. Create a `.env` file with your QuickBooks credentials and database settings:
-```
-CLIENT_ID=your_client_id
-CLIENT_SECRET=your_client_secret
-REDIRECT_URI=http://localhost:8000/callback
-
-# Database settings
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=pgdb
-DB_PORT=5432
-DB_NAME=postgres
-```
-
-4. Set up the PostgreSQL database:
+3. Run with Docker Compose:
 ```bash
-# Create the database
-createdb postgres
-
-# Initialize the database tables
-python -m app.init_db
+docker-compose up -d
 ```
 
-5. Run the application:
+The application will be available at `http://localhost:8000`
+
+## API Documentation
+
+Once the application is running, you can access:
+- Swagger UI: `http://localhost:8000/docs`
+
+### API Endpoints
+
+#### Authentication Endpoints
+
+- `GET /login`
+  - Initiates the OAuth2 authentication flow with QuickBooks
+  - Redirects to QuickBooks authorization page
+  - No authentication required
+
+- `GET /callback`
+  - Handles the OAuth2 callback from QuickBooks
+  - Required query parameters:
+    - `code`: Authorization code from QuickBooks
+    - `realmId`: QuickBooks realm ID
+  - Returns:
+    - Success: JSON with authentication status and tokens
+    - Error: 400 Bad Request with error details
+
+#### Account Endpoints
+
+- `GET /accounts`
+  - Retrieves all accounts from QuickBooks
+  - Optional query parameters:
+    - `name_prefix`: Filter accounts by name prefix
+    - `from_api`: Force synchronization with QuickBooks (default: false)
+  - Returns:
+    - Success: List of accounts with their details
+    - Error: 400 Bad Request or 401 Unauthorized
+
+## Testing
+
+### Running Tests in Docker
+
 ```bash
-uvicorn app.main:app --reload
+docker compose run api python run_tests.py
 ```
 
-## API Endpoints
+## Project Structure
 
-- `GET /login` - Initiates the OAuth login flow
-- `GET /callback` - Handles the OAuth callback
-- `GET /accounts` - Retrieves accounts (with optional name prefix filter)
-- `GET /health` - Health check endpoint
-
-## Usage
-
-1. Visit `http://localhost:8000/login` to start the authentication process
-2. After successful authentication, you can access the accounts endpoint:
-   - `http://localhost:8000/accounts` - Get all accounts
-   - `http://localhost:8000/accounts?name_prefix=Asset` - Get accounts with name prefix
-
-## Data Model
-
-### Account
-- `qbo_id`: QuickBooks account ID
-- `name`: Account name
-- `classification`: Account classification
-- `currency_ref`: Currency reference
-- `account_type`: Account type
-- `active`: Account status
-- `current_balance`: Current balance
-- `parent_id`: Parent account ID (for hierarchical structure)
-- `last_synced_at`: Last synchronization timestamp
-
-## Error Handling
-
-The API includes comprehensive error handling for:
-- Authentication failures
-- Token expiration and refresh
-- Rate limiting
-- Invalid requests
-- Server errors
-
-## Caching
-
-Account data is cached in the PostgreSQL database and automatically synchronized:
-- Initial sync on first request
-- Subsequent syncs after 1 hour
-- Only accounts updated since the last sync are retrieved
-- Manual sync available through the API 
+```
+app/
+├── api/            # API endpoints
+├── config/         # Configuration files
+├── database/       # Database setup
+├── models/         # SQLAlchemy models
+├── schemas/        # Pydantic schemas
+├── services/       # Business logic
+├── tests/          # Test files
+└── utils/          # Utility functions
+```

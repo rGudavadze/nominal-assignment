@@ -8,3 +8,4 @@ pydantic-settings==2.8.1
 intuit-oauth==1.2.6
 psycopg2-binary==2.9.10
 SQLAlchemy-Utils==0.41.2
+httpx==0.28.1
