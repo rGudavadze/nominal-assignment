@@ -33,7 +33,7 @@ docker build -t nominal .
 
 3. Run with Docker Compose:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 The application will be available at `http://localhost:8000`
@@ -77,7 +77,7 @@ Once the application is running, you can access:
 ### Running Tests in Docker
 
 ```bash
-docker compose run api python run_tests.py
+docker compose exec api python run_tests.py
 ```
 
 ## Project Structure
