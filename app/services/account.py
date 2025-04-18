@@ -35,7 +35,7 @@ class AccountService:
         sync_log.last_sync_at = sync_time
         self.db.commit()
     
-    def _fetch_accounts_from_api(self, last_sync_time: datetime) -> List[Dict[str, Any]]:
+    def _fetch_accounts_from_api(self, last_sync_time: Optional[datetime]) -> List[Dict[str, Any]]:
         """Fetch accounts from QuickBooks API that have been updated since last_sync_time."""
         token = self.auth_service.get_valid_token()
 
@@ -143,6 +143,7 @@ class AccountService:
     
     def sync_accounts(self):
         """Sync accounts from QuickBooks to database using bulk operations"""
+        print("Syncing accounts...")
         last_sync_time = self.last_sync_time
         if last_sync_time:
             last_sync_time = last_sync_time.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -176,9 +177,9 @@ class AccountService:
         
         return datetime.utcnow() - last_sync > timedelta(hours=1)
     
-    def get_accounts_with_sync(self, name_prefix: Optional[str] = None) -> List[Account]:
+    def get_accounts_with_sync(self, name_prefix: Optional[str] = None, from_api=False) -> List[Account]:
         """Get accounts, syncing first if necessary"""
-        if self.should_sync():
+        if from_api or self.should_sync():
             self.sync_accounts()
         
         return self.get_accounts(name_prefix)

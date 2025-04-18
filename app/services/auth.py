@@ -65,7 +65,7 @@ class AuthService:
         """Get a valid token, refreshing if necessary"""
         token = self.db.query(Token).first()
         if not token:
-            raise ValueError("No token found. Please authenticate first.")
+            raise HTTPException(401, "No token found. Please authenticate first.")
         
         if datetime.utcnow() >= token.expires_at - timedelta(minutes=5):
             return self.refresh_token(token)

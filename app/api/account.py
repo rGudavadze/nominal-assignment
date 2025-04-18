@@ -12,9 +12,10 @@ router = APIRouter(prefix='/accounts', tags=['Accounts'])
 @router.get("", response_model=List[AccountSchema])
 async def get_accounts(
     name_prefix: str = None,
+    from_api: str = None,
     account_service: AccountService = Depends(get_account_service),
     response_model=List[AccountSchema]
 ):
     """Get accounts with optional name prefix filter"""
-    accounts = account_service.get_accounts_with_sync(name_prefix)
+    accounts = account_service.get_accounts_with_sync(name_prefix, from_api)
     return accounts
