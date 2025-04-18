@@ -10,6 +10,7 @@ from models.sync import SyncLog
 from config.settings import settings
 from services.auth import AuthService
 from schemas.account import AccountCreateSchema
+from utils.logger import logger
 
 
 class AccountService:
@@ -143,7 +144,7 @@ class AccountService:
     
     def sync_accounts(self):
         """Sync accounts from QuickBooks to database using bulk operations"""
-        print("Syncing accounts...")
+        logger.info("Syncing accounts...")
         last_sync_time = self.last_sync_time
         if last_sync_time:
             last_sync_time = last_sync_time.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -151,7 +152,7 @@ class AccountService:
         accounts_data = self._fetch_accounts_from_api(last_sync_time)
         
         if not accounts_data:
-            print(f"No accounts updated since {last_sync_time}")
+            logger.info(f"No accounts updated since {last_sync_time}")
             self.update_last_sync_time(datetime.utcnow())
             return
         
@@ -170,7 +171,7 @@ class AccountService:
     
     def should_sync(self) -> bool:
         """Check if accounts need to be synced (older than 1 hour)"""
-        print("Checking if accounts need to be synced...")
+        logger.info("Checking if accounts need to be synced...")
         last_sync = self.last_sync_time
         if not last_sync:
             return True
