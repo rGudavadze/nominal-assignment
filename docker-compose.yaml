@@ -1,4 +1,3 @@
-
 services:
   pgdb:
     image: "postgres:13.2"
@@ -17,13 +16,20 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nominal_api
+    environment:
+      DB_USER: ${POSTGRES_USER-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD-postgres}
+      DB_HOST: pgdb
+      DB_PORT: 5432
+      DB_NAME: ${DATABASE_NAME-postgres}
     volumes:
       - ./app:/opt/app
+      - ./migrations:/opt/app/migrations
+      - ./alembic.ini:/opt/app/alembic.ini
     ports:
       - "8000:8000"
     depends_on:
       - pgdb
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:
   postgres_db:

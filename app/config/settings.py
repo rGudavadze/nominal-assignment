@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 
 
+# TODO: values shoud be loaded from .env file
 class Settings(BaseSettings):
     CLIENT_ID: str = "ABBUzqL6ULdbIHJXKENYjDHXXjizvSRmwxFr0eeFqMcHLmYxt1"
     CLIENT_SECRET: str = "YgzBiE9Ije7yBq7L2b9v08zBDkQxRlBVaKSPZiTl"
